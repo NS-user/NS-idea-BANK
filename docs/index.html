@@ -165,7 +165,7 @@ const REPO = (function(){
   }
   return 'NS-user/NS-idea-BANK';
 })();
-document.getElementById('submit').href = `https://github.com/${REPO}/issues/new?template=idea.yml`;
+document.getElementById('submit').href = `./submit.html`;
 document.getElementById('listlink').href = `https://github.com/${REPO}/issues?q=is%3Aissue+label%3Aidea`;
 
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));

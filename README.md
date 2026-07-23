@@ -11,29 +11,39 @@
 
 ---
 
-## 仕組み（3ステップ）
+## 仕組み
+
+ユーザーが触れる画面は **すべて独自HTML**（GitHub は一切見えません）。
+書き込みは小さなリレー経由で GitHub に渡り、あとは GitHub Actions が自動処理します。
 
 ```
-[組合員] --投稿--> GitHub Issue (アイデア) --イベント--> GitHub Actions (集計・採点)
-                                                              |
-                                        docs/data/*.json に反映・コミット
-                                                              |
-                                                     GitHub Pages で公開
-                                              🏆 ランキング & 📥 アイデア一覧
+[独自HTML 投稿フォーム docs/submit.html]
+      │ POST(JSON)
+      ▼
+[リレー relay/worker.js（無料・秘密トークン保持）]
+      │ repository_dispatch
+      ▼
+[GitHub Actions] → Issue 作成 → 自動採点 → docs/data/*.json を更新
+      │
+      ▼
+[独自HTML 通帳ボード docs/index.html]  🏆 ランキング & 📥 アイデア台帳
 ```
 
-1. **投稿** — Issue フォームに入力するだけ（基本 **+10pt**）。
+1. **投稿** — 独自HTMLフォームに入力するだけ（基本 **+10pt**）。
 2. **加点** — 執行部がステータスを進めるほど、みんなの 👍 が増えるほど加点。
-3. **公開** — ボードにアイデアとポイントランキングが自動反映。
+3. **公開** — 通帳ボードにアイデアとポイントランキングが自動反映。
+
+> GitHub の Issue フォーム（`?template=idea.yml`）も引き続き使えますが、
+> 組合員向けの導線は独自HTMLの `submit.html` を推奨します。
 
 ## エンドポイント（URL）
 
 | 用途 | URL |
 | --- | --- |
-| 🖊️ アイデア投稿フォーム | `https://github.com/NS-user/NS-idea-BANK/issues/new?template=idea.yml` |
-| 📋 ボード（一覧・ランキング） | `https://NS-user.github.io/NS-idea-BANK/` |
+| 🖊️ 投稿フォーム（独自HTML） | `https://NS-user.github.io/NS-idea-BANK/submit.html` |
+| 📋 通帳ボード（独自HTML） | `https://NS-user.github.io/NS-idea-BANK/` |
 | 🔌 API 的な生データ | `docs/data/ideas.json` / `points.json` / `summary.json` |
-| 🤖 プログラム投稿（POST） | `POST https://api.github.com/repos/NS-user/NS-idea-BANK/dispatches` |
+| 🤖 プログラム投稿（POST） | リレー URL、または `POST .../repos/NS-user/NS-idea-BANK/dispatches` |
 
 ### プログラムから投稿（他の GitHub Actions からもサクッと）
 
@@ -67,7 +77,9 @@ curl -X POST https://api.github.com/repos/NS-user/NS-idea-BANK/dispatches \
 2. **Settings → Pages** で「Build and deployment」を **GitHub Actions** に設定。
 3. **Actions → 「ラベル初期化」→ Run workflow** を実行（カテゴリ/ステータスのラベルを作成）。
 4. **Actions → 「アイデア集計・ポイント付与」→ Run workflow** を一度実行して初期データを生成。
-5. 完了。あとは Issue フォームから投稿されるたびに自動集計されます。
+5. **リレーをデプロイ**して独自HTMLフォームから投稿できるようにする → [`relay/README.md`](relay/README.md)（約5分）。
+6. **`docs/config.js`** の `endpoint` にリレー URL を設定して push。
+7. 完了。あとは `submit.html` から投稿されるたびに自動集計されます。
 
 > Actions が `docs/data` をコミットするため、リポジトリ設定の
 > **Settings → Actions → General → Workflow permissions** を

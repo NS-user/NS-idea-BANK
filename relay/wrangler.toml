@@ -1,0 +1,12 @@
+name = "idea-bank-relay"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+
+# 変数（公開されてよいもの）
+[vars]
+REPO = "NS-user/NS-idea-BANK"
+# ALLOW_ORIGIN = "https://ns-user.github.io"
+
+# シークレット（コマンドで設定。ここには書かない）:
+#   npx wrangler secret put GH_TOKEN
+#   npx wrangler secret put ACCESS_CODE   # 組合コードを使う場合
