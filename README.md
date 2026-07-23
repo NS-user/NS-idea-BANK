@@ -53,7 +53,7 @@ curl -X POST https://api.github.com/repos/NS-user/NS-idea-BANK/dispatches \
   -H "Accept: application/vnd.github+json" \
   -d '{"event_type":"idea-submit","client_payload":{
         "title":"休憩室にウォーターサーバー","category":"福利厚生",
-        "detail":"夏場の水分補給が不便","proposal":"サーバーを設置","author":"shinji"}}'
+        "detail":"夏場の水分補給が不便","proposal":"サーバーを設置","author":"組合員A"}}'
 ```
 
 他リポジトリのワークフローからは `peter-evans/repository-dispatch` などで同じ event_type を送るだけです。

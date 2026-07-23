@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-07-23T03:20:00Z",
+  "generatedAt": "2026-07-23T04:05:00Z",
   "ideas": [
     {
       "id": 2,
       "title": "シフト表をスプレッドシートで自動生成",
-      "author": "mori",
+      "author": "組合員A",
       "avatar": "",
       "url": "#",
       "category": "業務改善",
@@ -21,7 +21,7 @@
     {
       "id": 1,
       "title": "休憩室にウォーターサーバーを設置",
-      "author": "shinji-takuma",
+      "author": "組合員B",
       "avatar": "",
       "url": "#",
       "category": "福利厚生",
@@ -38,7 +38,7 @@
     {
       "id": 5,
       "title": "有給取得状況を月次で見える化",
-      "author": "kubo",
+      "author": "組合員C",
       "avatar": "",
       "url": "#",
       "category": "労働条件",
@@ -55,7 +55,7 @@
     {
       "id": 3,
       "title": "定例会議を30分に短縮しアジェンダを事前共有",
-      "author": "mori",
+      "author": "組合員A",
       "avatar": "",
       "url": "#",
       "category": "業務改善",
@@ -72,7 +72,7 @@
     {
       "id": 4,
       "title": "作業手順書を写真つきで標準化",
-      "author": "shinji-takuma",
+      "author": "組合員B",
       "avatar": "",
       "url": "#",
       "category": "標準化",

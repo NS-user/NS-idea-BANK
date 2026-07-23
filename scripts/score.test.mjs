@@ -19,7 +19,7 @@ test('基本ポイントだけが付く（ラベル・リアクションなし�
   const idea = scoreIdea({
     number: 1,
     title: '休憩室にコーヒーメーカーを',
-    user: { login: 'shinji' },
+    user: { login: 'user-a' },
     labels: [],
   });
   assert.equal(idea.points, BASE_POINTS);
@@ -55,14 +55,14 @@ test('リアクションが加点され、カテゴリを抽出する', () => {
 
 test('集計：ランキング・サマリが正しい', () => {
   const { ideas, leaderboard, summary } = scoreIdeas([
-    { number: 1, title: 'A', user: { login: 'shinji' }, labels: ['status:採用'], positiveReactions: 2 },
-    { number: 2, title: 'B', user: { login: 'mori' }, labels: [] },
-    { number: 3, title: 'C', user: { login: 'shinji' }, labels: [] },
+    { number: 1, title: 'A', user: { login: 'user-a' }, labels: ['status:採用'], positiveReactions: 2 },
+    { number: 2, title: 'B', user: { login: 'user-b' }, labels: [] },
+    { number: 3, title: 'C', user: { login: 'user-a' }, labels: [] },
   ]);
 
   assert.equal(ideas.length, 3);
-  // shinji: (10+80+6) + (10) = 106 / mori: 10
-  assert.equal(leaderboard[0].user, 'shinji');
+  // user-a: (10+80+6) + (10) = 106 / user-b: 10
+  assert.equal(leaderboard[0].user, 'user-a');
   assert.equal(leaderboard[0].points, BASE_POINTS + 80 + 6 + BASE_POINTS);
   assert.equal(leaderboard[0].rank, 1);
   assert.equal(leaderboard[0].adopted, 1);
