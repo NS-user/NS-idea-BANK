@@ -1,0 +1,57 @@
+name: 💡 アイデアを投稿する
+description: 職場で気づいた業務改善・労働条件改善のアイデアを投稿すると、労働組合ポイントがもらえます。
+title: "[アイデア] "
+labels: ["idea"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## アイデアBANK へようこそ 🎉
+        気づいたことを投稿するだけで **基本 10pt**。
+        執行部の検討・採用・実装や、みんなの 👍 でさらにポイントが加算されます。
+  - type: input
+    id: summary
+    attributes:
+      label: アイデアのタイトル
+      description: ひとことで内容が分かるように（タイトル欄の [アイデア] の後ろにも反映されます）
+      placeholder: 例）休憩室にウォーターサーバーを設置したい
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: カテゴリ
+      description: 最も近いものを選んでください
+      options:
+        - 業務改善
+        - 標準化
+        - 労働条件
+        - 福利厚生
+        - 安全・衛生
+        - コミュニケーション
+        - その他
+    validations:
+      required: true
+  - type: textarea
+    id: detail
+    attributes:
+      label: 現状の課題
+      description: いま何に困っていますか？
+      placeholder: 例）夏場に水分補給の場所が遠く、こまめに休憩がとりにくい。
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 改善アイデア
+      description: どうなったら良いか、具体的な提案を書いてください。
+      placeholder: 例）休憩室にウォーターサーバーを置く。費用は月◯円程度。
+    validations:
+      required: true
+  - type: textarea
+    id: effect
+    attributes:
+      label: 期待できる効果（任意）
+      description: 効率化・満足度・安全性など、見込まれる効果があれば。
+    validations:
+      required: false

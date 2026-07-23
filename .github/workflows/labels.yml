@@ -1,0 +1,44 @@
+name: ラベル初期化
+
+# アイデアBANK で使うカテゴリ / ステータスラベルを作成・更新する。
+# 初回セットアップ時に「Run workflow」から実行してください。
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  issues: write
+
+jobs:
+  labels:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const labels = [
+              { name: 'idea', color: '7c5cff', description: 'アイデア投稿' },
+              { name: 'cat:業務改善', color: '1f6feb', description: 'カテゴリ' },
+              { name: 'cat:標準化', color: '1f6feb', description: 'カテゴリ' },
+              { name: 'cat:労働条件', color: '1f6feb', description: 'カテゴリ' },
+              { name: 'cat:福利厚生', color: '1f6feb', description: 'カテゴリ' },
+              { name: 'cat:安全・衛生', color: '1f6feb', description: 'カテゴリ' },
+              { name: 'cat:コミュニケーション', color: '1f6feb', description: 'カテゴリ' },
+              { name: 'cat:その他', color: '1f6feb', description: 'カテゴリ' },
+              { name: 'status:検討中', color: 'ffcc4d', description: '執行部が検討中 (+20pt)' },
+              { name: 'status:採用', color: '26d0a8', description: '採用決定 (+80pt)' },
+              { name: 'status:実装済み', color: '0e8a6e', description: '職場へ反映済み (+200pt)' },
+            ];
+            for (const l of labels) {
+              try {
+                await github.rest.issues.createLabel({ ...context.repo, ...l });
+                core.info(`created: ${l.name}`);
+              } catch (e) {
+                if (e.status === 422) {
+                  await github.rest.issues.updateLabel({ ...context.repo, ...l, new_name: l.name });
+                  core.info(`updated: ${l.name}`);
+                } else {
+                  throw e;
+                }
+              }
+            }

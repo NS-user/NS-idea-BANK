@@ -1,0 +1,29 @@
+{
+  "generatedAt": "2026-07-23T03:20:00Z",
+  "leaderboard": [
+    {
+      "rank": 1,
+      "user": "mori",
+      "avatar": "",
+      "points": 291,
+      "ideas": 2,
+      "adopted": 1
+    },
+    {
+      "rank": 2,
+      "user": "shinji-takuma",
+      "avatar": "",
+      "points": 133,
+      "ideas": 2,
+      "adopted": 1
+    },
+    {
+      "rank": 3,
+      "user": "kubo",
+      "avatar": "",
+      "points": 48,
+      "ideas": 1,
+      "adopted": 0
+    }
+  ]
+}

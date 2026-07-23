@@ -1,0 +1,12 @@
+{
+  "name": "ns-idea-bank",
+  "version": "1.0.0",
+  "private": true,
+  "description": "職場のアイデアを投稿して労働組合ポイントがもらえるサービス（GitHub Issues + Actions 製）",
+  "type": "module",
+  "scripts": {
+    "test": "node scripts/score.test.mjs",
+    "build": "node scripts/build-data.mjs issues.json docs/data"
+  },
+  "license": "MIT"
+}

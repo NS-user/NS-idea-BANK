@@ -1,0 +1,53 @@
+name: アイデア投稿エンドポイント (repository_dispatch)
+
+# URL エンドポイント:
+#   POST https://api.github.com/repos/<owner>/<repo>/dispatches
+#   Header: Authorization: Bearer <TOKEN>  (repo scope)
+#   Body:   {"event_type":"idea-submit","client_payload":{
+#             "title":"...", "category":"業務改善", "detail":"...",
+#             "proposal":"...", "author":"..." }}
+# 他リポジトリの GitHub Actions からも peter-evans/repository-dispatch などで叩けます。
+
+on:
+  repository_dispatch:
+    types: [idea-submit]
+
+permissions:
+  issues: write
+
+jobs:
+  create-idea:
+    runs-on: ubuntu-latest
+    steps:
+      - name: payload から Issue（アイデア）を作成
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const p = context.payload.client_payload || {};
+            const title = (p.title || '').trim();
+            if (!title) {
+              core.setFailed('client_payload.title は必須です');
+              return;
+            }
+            const category = (p.category || 'その他').trim();
+            const body = [
+              p.author ? `**投稿者:** ${p.author}` : '',
+              '',
+              '### 現状の課題',
+              p.detail || '(記載なし)',
+              '',
+              '### 改善アイデア',
+              p.proposal || '(記載なし)',
+              p.effect ? `\n### 期待できる効果\n${p.effect}` : '',
+              '',
+              '_via repository_dispatch endpoint_',
+            ].filter((x) => x !== '').join('\n');
+
+            const created = await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title.startsWith('[アイデア]') ? title : `[アイデア] ${title}`,
+              body,
+              labels: ['idea', `cat:${category}`],
+            });
+            core.notice(`アイデアを作成しました: #${created.data.number}`);

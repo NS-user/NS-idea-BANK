@@ -1,0 +1,90 @@
+name: アイデア集計・ポイント付与
+
+on:
+  issues:
+    types: [opened, edited, labeled, unlabeled, reopened, closed]
+  workflow_dispatch: {}
+  schedule:
+    - cron: "17 * * * *" # リアクションはイベント発火しないため毎時再集計
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: idea-bank-data
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: アイデア（idea ラベルの Issue）を収集
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const issues = await github.paginate(github.rest.issues.listForRepo, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'idea',
+              state: 'all',
+              per_page: 100,
+            });
+            const payload = issues
+              .filter((i) => !i.pull_request)
+              .map((i) => {
+                const r = i.reactions || {};
+                const positiveReactions =
+                  (r['+1'] || 0) + (r.heart || 0) + (r.hooray || 0) + (r.rocket || 0);
+                return {
+                  number: i.number,
+                  title: i.title,
+                  html_url: i.html_url,
+                  user: { login: i.user && i.user.login, avatar_url: i.user && i.user.avatar_url },
+                  labels: (i.labels || []).map((l) => (typeof l === 'string' ? l : l.name)),
+                  positiveReactions,
+                  created_at: i.created_at,
+                };
+              });
+            fs.writeFileSync('issues.json', JSON.stringify(payload));
+            core.setOutput('count', String(payload.length));
+
+      - name: データ生成 (docs/data/*.json)
+        run: node scripts/build-data.mjs issues.json docs/data
+
+      - name: 変更をコミット
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/data
+          if git diff --cached --quiet; then
+            echo "変更なし"
+          else
+            git commit -m "chore: アイデアBANK データ更新 [skip ci]"
+            git push
+          fi
+
+      - name: 新規投稿にポイント付与コメント
+        if: github.event_name == 'issues' && github.event.action == 'opened'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const n = context.payload.issue.number;
+            const author = context.payload.issue.user.login;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: n,
+              body: [
+                `🎉 @${author} さん、アイデアの投稿ありがとうございます！`,
+                ``,
+                `**基本ポイント +10pt** を獲得しました。`,
+                `執行部が **検討中(+20)→採用(+80)→実装済み(+200)** とステータスを進めるほど、`,
+                `また 👍 リアクション（1件+3pt）が増えるほどポイントが加算されます。`,
+                ``,
+                `📊 ランキングは [アイデアBANK](https://${context.repo.owner.toLowerCase()}.github.io/${context.repo.repo}/) で確認できます。`,
+              ].join('\n'),
+            });
