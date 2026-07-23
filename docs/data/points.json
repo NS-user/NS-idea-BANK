@@ -1,29 +1,4 @@
 {
-  "generatedAt": "2026-07-23T04:05:00Z",
-  "leaderboard": [
-    {
-      "rank": 1,
-      "user": "組合員A",
-      "avatar": "",
-      "points": 291,
-      "ideas": 2,
-      "adopted": 1
-    },
-    {
-      "rank": 2,
-      "user": "組合員B",
-      "avatar": "",
-      "points": 133,
-      "ideas": 2,
-      "adopted": 1
-    },
-    {
-      "rank": 3,
-      "user": "組合員C",
-      "avatar": "",
-      "points": 48,
-      "ideas": 1,
-      "adopted": 0
-    }
-  ]
+  "generatedAt": "2026-07-23T06:42:30.870Z",
+  "leaderboard": []
 }
